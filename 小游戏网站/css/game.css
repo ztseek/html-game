@@ -1,0 +1,101 @@
+.game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.game-header h1 {
+    color: #2c3e50;
+}
+
+button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+/* 记忆游戏样式 */
+.memory-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.memory-card {
+    aspect-ratio: 1;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.memory-card .card-front,
+.memory-card .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    border-radius: 10px;
+    transition: transform 0.6s;
+}
+
+.memory-card .card-front {
+    background: #3498db;
+    color: white;
+    transform: rotateY(0deg);
+}
+
+.memory-card .card-back {
+    background: #ecf0f1;
+    transform: rotateY(180deg);
+}
+
+.memory-card.flipped .card-front {
+    transform: rotateY(-180deg);
+}
+
+.memory-card.flipped .card-back {
+    transform: rotateY(0deg);
+}
+
+.memory-card.matched .card-back {
+    background: #27ae60;
+    color: white;
+}
+
+/* 贪吃蛇画布样式 */
+#gameCanvas {
+    border: 3px solid #2c3e50;
+    border-radius: 10px;
+    background: #34495e;
+    display: block;
+    margin: 0 auto;
+}
+
+.controls {
+    margin-top: 1rem;
+    color: #7f8c8d;
+}

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识问答游戏</title>
+    <link rel="stylesheet" href="../css/game.css">
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .quiz-progress {
+            background: #ecf0f1;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            background: #bdc3c7;
+            border-radius: 10px;
+            height: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: #27ae60;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .option {
+            background: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+        
+        .option:hover {
+            background: #d5dbdb;
+            transform: translateY(-2px);
+        }
+        
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+        
+        .option.correct {
+            background: #27ae60;
+            color: white;
+            border-color: #229954;
+        }
+        
+        .option.incorrect {
+            background: #e74c3c;
+            color: white;
+            border-color: #c0392b;
+        }
+        
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .next-btn, .submit-btn {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+        }
+        
+        .next-btn:disabled, .submit-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .next-btn:disabled:hover, .submit-btn:disabled:hover {
+            background: #bdc3c7;
+            transform: none;
+        }
+        
+        .result-container {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            border: 5px solid #ecf0f1;
+        }
+        
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+            justify-content: center;
+        }
+        
+        .category-btn {
+            background: #95a5a6;
+            padding: 8px 15px;
+        }
+        
+        .category-btn.active {
+            background: #e74c3c;
+        }
+        
+        .feedback {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .feedback.correct {
+            background: #d5f4e6;
+            color: #27ae60;
+            border: 1px solid #27ae60;
+        }
+        
+        .feedback.incorrect {
+            background: #fadbd8;
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container quiz-container">
+        <div class="game-header">
+            <h1>❓ 知识问答</h1>
+            <div>
+                <button onclick="startNewGame()">新的游戏</button>
+                <button onclick="location.href='../index.html'">返回首页</button>
+            </div>
+        </div>
+        
+        <div class="category-buttons">
+            <button class="category-btn active" onclick="setCategory('all')">所有类别</button>
+            <button class="category-btn" onclick="setCategory('science')">科学技术</button>
+            <button class="category-btn" onclick="setCategory('history')">历史文化</button>
+            <button class="category-btn" onclick="setCategory('sports')">体育娱乐</button>
+        </div>
+        
+        <!-- 开始界面 -->
+        <div id="startScreen" class="question-container" style="text-align: center;">
+            <h2>欢迎来到知识问答!</h2>
+            <p>测试你的知识水平，回答各种有趣的问题</p>
+            <button class="submit-btn" onclick="startQuiz()" style="margin-top: 20px;">开始答题</button>
+        </div>
+        
+        <!-- 答题界面 -->
+        <div id="quizScreen" style="display: none;">
+            <div class="quiz-progress">
+                <div>问题 <span id="currentQuestion">1</span> / <span id="totalQuestions">10</span></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div>得分: <span id="currentScore">0</span></div>
+            </div>
+            
+            <div class="question-container">
+                <div class="question-text" id="questionText"></div>
+                
+                <div class="options-container" id="optionsContainer">
+                    <!-- 选项通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="feedback" id="feedback"></div>
+                
+                <div class="quiz-controls">
+                    <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>下一题</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 结果界面 -->
+        <div id="resultScreen" class="result-container" style="display: none;">
+            <h2>答题完成!</h2>
+            <div class="score-circle" id="finalScoreCircle">0%</div>
+            <h3 id="resultMessage"></h3>
+            <p>你回答了 <span id="correctAnswers">0</span> / <span id="totalAnswered">0</span> 个问题</p>
+            <div style="margin: 20px 0;">
+                <button class="submit-btn" onclick="restartQuiz()">再玩一次</button>
+                <button class="next-btn" onclick="showAnswers()">查看答案</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/quiz.js"></script>
+</body>
+</html>

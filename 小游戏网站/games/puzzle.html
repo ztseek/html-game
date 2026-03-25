@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字拼图游戏</title>
+    <link rel="stylesheet" href="../css/game.css">
+    <style>
+        .puzzle-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .puzzle-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin: 20px auto;
+            background: #34495e;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 400px;
+        }
+        
+        .puzzle-tile {
+            aspect-ratio: 1;
+            background: #3498db;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        
+        .puzzle-tile:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+        
+        .puzzle-tile.empty {
+            background: transparent;
+            cursor: default;
+        }
+        
+        .puzzle-tile.empty:hover {
+            transform: none;
+            background: transparent;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 0 10px;
+        }
+        
+        .timer, .moves {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .win-message {
+            display: none;
+            background: #27ae60;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .difficulty-buttons {
+            margin: 15px 0;
+        }
+        
+        .difficulty-buttons button {
+            margin: 0 5px;
+            padding: 8px 15px;
+        }
+        
+        .difficulty-buttons button.active {
+            background: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container puzzle-container">
+        <div class="game-header">
+            <h1>🧩 数字拼图</h1>
+            <div>
+                <button onclick="resetGame()">重新开始</button>
+                <button onclick="location.href='../index.html'">返回首页</button>
+            </div>
+        </div>
+        
+        <div class="difficulty-buttons">
+            <button onclick="setDifficulty(3)" id="btn3x3">3×3 简单</button>
+            <button onclick="setDifficulty(4)" id="btn4x4" class="active">4×4 普通</button>
+            <button onclick="setDifficulty(5)" id="btn5x5">5×5 困难</button>
+        </div>
+        
+        <div class="game-info">
+            <div class="moves">移动步数: <span id="moveCount">0</span></div>
+            <div class="timer">用时: <span id="timeDisplay">00:00</span></div>
+        </div>
+        
+        <div id="puzzleBoard" class="puzzle-board">
+            <!-- 拼图块通过JavaScript动态生成 -->
+        </div>
+        
+        <div id="winMessage" class="win-message">
+            <h2>🎉 恭喜完成！</h2>
+            <p>你用了 <span id="finalMoves">0</span> 步，耗时 <span id="finalTime">00:00</span></p>
+            <button onclick="resetGame()">再玩一次</button>
+        </div>
+        
+        <div class="controls">
+            <p>点击数字方块移动到相邻的空位，按顺序排列所有数字</p>
+        </div>
+    </div>
+
+    <script src="../js/puzzle.js"></script>
+</body>
+</html>
